@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holiday List</title>
+
+    <!-- Bootstrap CSS (for styling and modal support) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS (if needed) -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Holiday List</h1>
+
+        <!-- Search and Filter Form -->
+        <form method="GET" class="mb-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name..." value="{{ request.GET.search }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="month" class="form-select">
+                        <option value="">Select Month</option>
+                        {% for month_num, month_name in months %}
+                            <option value="{{ month_num }}" {% if request.GET.month == month_num|stringformat:"i" %}selected{% endif %}>
+                                {{ month_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="year" class="form-select">
+                        <option value="">Select Year</option>
+                        {% for year in years %}
+                            <option value="{{ year }}" {% if request.GET.year == year|stringformat:"i" %}selected{% endif %}>
+                                {{ year }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 d-grid">
+                    <button type="submit" class="btn btn-primary">Search & Filter</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Table displaying holidays -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Holiday Name</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for holiday in holidays %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ holiday.name }}</td>
+                    <td>{{ holiday.date.iso }}</td>
+                    <td>
+                        <!-- Button to trigger the modal and display holiday details -->
+                        <button class="btn btn-primary btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#holidayModal"
+                                data-name="{{ holiday.name }}"
+                                data-date="{{ holiday.date.iso }}"
+                                data-description="{{ holiday.description }}"
+                                data-type="{{ holiday.type|join:', ' }}">
+                            View Details
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No holidays available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap Modal for displaying holiday details -->
+    <div class="modal fade" id="holidayModal" tabindex="-1" aria-labelledby="holidayModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="holidayModalLabel">Holiday Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Name:</strong> <span id="modal-holiday-name"></span></p>
+                    <p><strong>Date:</strong> <span id="modal-holiday-date"></span></p>
+                    <p><strong>Type:</strong> <span id="modal-holiday-type"></span></p>
+                    <p><strong>Description:</strong></p>
+                    <p id="modal-holiday-description"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (for modal functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript for populating modal content -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const holidayModal = document.getElementById('holidayModal');
+            holidayModal.addEventListener('show.bs.modal', (event) => {
+                const button = event.relatedTarget;
+
+                // Extract data attributes from the button
+                const name = button.getAttribute('data-name');
+                const date = button.getAttribute('data-date');
+                const description = button.getAttribute('data-description');
+                const type = button.getAttribute('data-type');
+
+                // Populate the modal with holiday details
+                document.getElementById('modal-holiday-name').textContent = name;
+                document.getElementById('modal-holiday-date').textContent = date;
+                document.getElementById('modal-holiday-description').textContent = description;
+                document.getElementById('modal-holiday-type').textContent = type;
+            });
+        });
+    </script>
+</body>
+</html>

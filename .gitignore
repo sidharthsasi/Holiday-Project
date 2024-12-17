@@ -1,0 +1,15 @@
+*.py[cod]
+*$py.class
+.idea
+*.so
+.env
+.vscode
+venv
+*.log
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+.python-version
+*/migrations/*
+.user
