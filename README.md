@@ -6,7 +6,6 @@ The Holiday API Application is a Django-based web application designed to fetch 
 
 1. Clone the Repository
 git clone https://github.com/sidharthsasi/Holiday-Project.git
-cd veuz
 
 2. Install Dependencies
 pip install -r requirements.txt
