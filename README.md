@@ -5,17 +5,29 @@ The Holiday API Application is a Django-based web application designed to fetch 
 
 
 1. Clone the Repository
+
+   
 git clone https://github.com/sidharthsasi/Holiday-Project.git
 
 2. Install Dependencies
+
+   
 pip install -r requirements.txt
 
 3. Migrate the Database
+
+
 python manage.py makemigrations
+
+
 python manage.py migrate
 
 4. Create Superuser (For Admin Access)
+
+   
 python manage.py createsuperuser
 
 5. Run the Development Server
+
+   
 python manage.py runserver
